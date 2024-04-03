@@ -1,6 +1,6 @@
 class ArticlesController < ApplicationController
   http_basic_authenticate_with name: "nandang", password: "secret", except: [:index, :show]
-  
+
   def index
     @articles = Article.all
   end
@@ -16,10 +16,13 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(article_params)
 
-    if @article.save
-      redirect_to @article
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @article.save
+        format.turbo_stream { render turbo_stream: turbo_stream.prepend("articles", partial: "articles/article", locals: { article: @article } ) }
+        format.html { redirect_to @article, notice: "Article was successfully created." } 
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 

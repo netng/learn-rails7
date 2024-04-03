@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "modal" do %>
+  <%= tag.div data: {
+    controller: "turbo-modal",
+    turbo_modal_target: "modal",
+    action: "turbo:submit-end->turbo-modal#submitEnd keyup@window->turbo-modal#closeWithKeyboard click@window->turbo-modal#closeBackground"},
+    class: "modal" do %>
+
+    <h1 class="modal-title"><%= title %></h1>
+    <%= yield %>
+    <%= button_tag "Close", data: { action: "turbo-modal#hideModal" } %>
+  <% end %>
+<% end %>

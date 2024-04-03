@@ -2,14 +2,8 @@
 
 Our blob has <%= Article.public_count %> articles and counting!
 
-<ul>
-    <% @articles.each do |article| %>
-			<% unless article.archived? %>
-				<li>
-					<%= link_to article.title, article %>
-				</li>
-			<% end %>
-    <% end %>
+<ul id="articles">
+  <%= render @articles %>
 </ul>
 
-<%= link_to "New Article", new_article_path %>
+<%= link_to "New Article", new_article_path, method: :get, data: { turbo_frame: "modal" } %>
