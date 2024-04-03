@@ -19,7 +19,7 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.save
         format.turbo_stream { render turbo_stream: turbo_stream.prepend("articles", partial: "articles/article", locals: { article: @article } ) }
-        format.html { redirect_to @article, notice: "Article was successfully created." } 
+        format.html { redirect_to root_path, notice: "Article was successfully created." } 
       else
         format.html { render :new, status: :unprocessable_entity }
       end
@@ -33,10 +33,13 @@ class ArticlesController < ApplicationController
   def update
     @article = Article.find(params[:id])
 
-    if @article.update(article_params)
-      redirect_to @article
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @article.update(article_params)
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(@article, partial: "articles/article_details", locals: { article: @article } ) }
+        format.html { redirect_to article_url(@article), notice: "Article was successfully updated." } 
+      else
+        format.html { render :edit, status: :unprocessable_entity, status: :unprocessable_entity }
+      end
     end
   end
 
